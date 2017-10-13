@@ -1,0 +1,131 @@
+# Documentation for integrating with Cappasity 3D Platform
+
+## Registering an account and getting an API key
+
+1. Register using https://3d.cappasity.com/register link
+2. Complete email verification. If you are using custom domain - email might be a bit slow to come due to "graylisting". However it should arrive soon. If not - check back with us, we'll help.
+3. Go to account page - https://3d.cappasity.com/account/security - and create a security token, you will need this for interacting with API. Please securely store it somewhere - you will not be able to see created token again for security reasons
+
+## Uploading 3D View or 3D models
+
+1. Use Easy 3D Scan software to prepare your 3D Views and upload them to Cappasity platform.
+2. For ease of integration assign SKU to the models you are uploading - this is a user generated alias, which can be used to programmatically access existing models and generate embeddable iframe code on the go.
+3. If you do not assign SKUs right away - it can be done manually through our website interface via "edit model" feature.
+
+## API methods
+
+There are 2 ways to integrate with us - for testing & debugging you might use `embed button`, which will allow you to select different settings, size of the iframe and receive `iframe` code right away. However, when you are working with large amounts of models it might be most convenient to use API to generate iframe code. It won't change unless you change settings - so it's advised to cache it to reduce latency and amount of requests your server is performing.
+
+### Get embed code based on SKU
+
+1. We support gzip, if you want it to work - pass 'Accept-Encoding: gzip', with curl automatically encoding/decoding is performed with `--compressed` options
+2. We strive to comply with `http://jsonapi.org/` scheme, and because of that we respond with `application/vnd.api+json` content-type, it's essentially the same as `application/json`, but notifies you that we are following this specification
+3. We expect you to send the content in the format of jsonapi, so please, specify `Content-Type: application/vnd.api+json` header
+4. This request requires authentication - specify `Authorization: Bearer <your-token>` Header
+5. To ensure consistent versions of the API, you can pass an extra header of `Accept-Version: ~1` which would tell that you want to receive response of the version 1 API. In the future if we change something - nothing will break in your integration
+
+This is a sample CURL request for this method. For a more detailed example in javascript, check sku-embed.js sample
+
+```bash
+curl -X POST --compressed \
+  -H "Content-Type: application/vnd.api+json" \
+  -H "Authorization: Bearer hash.token.signature" \
+  "https://api.cappasity.com/api/files/embed" \
+  -d '{
+    "data": {
+      "id": "sku2137189",
+      "type": "embed",
+      "attributes": {
+        "width": "100%",
+        "height": "600px",
+        "autorun": true,
+        "closebutton": true,
+        "hidecontrols": false,
+        "logo": true,
+        "hidefullscreen": false
+      }
+    }
+  }'
+```
+
+HTTP response will have statusCode `200` and contain the following JSON data structure in the body:
+```json
+{
+  "meta": {
+    "id": "request-id"
+  },
+  "data": "iframe code"
+}
+```
+
+Use iframe code and insert it into your HTML
+
+### List uploaded files
+
+This method allows to return list of uploaded files and paginate between them. For example, you can get a list of uploaded files between 2 points in time for your user.
+Due to database architecture - list of returned models will be internally cached until one of 3 cases happen: last access to list was done
+more than 30 seconds ago, model was uploaded or model was deleted. In the future this can change.
+
+Below is description of accepted params:
+
+| Property Type | Property Name   | Default  | Allowed Values   | Example                         | Comments                                                                          |
+|---------------|-----------------|----------|------------------|---------------------------------|-------------------------------------------------------------------------------|
+| Header        | Authorization   |          |                  | `Authorization: Bearer <token>` | If not specified - will only return public files |
+| Header        | Accept-Encoding |          |                  | `Accept-Encoding: gzip`         | If not specified - will return plain text, please use it |
+| Header        | Accept-Version  |          |                  | `Accept-Version: ~1`            | If not specified - will use most-recent version on breaking changes, please pin API |
+| Query         | pub             |          |             0, 1 | `?pub=0`                        | If authorization header is set & pub=0 - includes private models |
+| Query         | order           |      ASC |        ASC, DESC | `?order=DESC`                   | Defaults to ascending |
+| Query         | offset          |        0 |     0 < offset   | `?offset=24`                    | Used for paginating |
+| Query         | limit           |       12 | 0 < limit <= 100 | `?limit=24`                     | Models per page |
+| Query         | filter          | `%7B%7D` |                  | `?filter=%7B%7D` | Used to filter response |
+| Query         | criteria        |       id |                  | `?criteria=uploadedAt`          | sorts by this field |
+| Query         | shallow         |        0 |                  | `?shallow=1`                    | please set to 1 to reduce traffic. It omits information about uploaded files |
+| Query         | owner           |          |                  | `?owner=tsum`                   | for public - can select any customer alias, for private - must supply auth token |
+
+Most important of all params is filter. To create it use the following function:
+
+```js
+function encodeFilter(obj) {
+  return encodeURIComponent(JSON.stringify(obj));
+}
+```
+
+Example:
+
+```js
+const filter = encodeFilter({
+  uploadedAt: {
+    gte: 1486694997327, // miliseconds
+    lte: 1487447115708, // miliseconds
+  },
+});
+```
+
+Example request:
+
+```bash
+curl -X GET --compressed \
+  -H "Authorization: Bearer hash.token.signature" \
+  "https://api.cappasity.com/api/files?owner=cappasity&sortBy=uploadedAt&order=DESC&shallow=1&offset=0&limit=24&filter=%7B%22uploadedAt%22%3A%7B%22gte%22%3A1486694997327%2C%22lte%22%3A1487447115708%7D%7D"
+```
+
+### Getting preview image for the model
+
+`https://api.cappasity.com/api/files/preview/cappasity/w640-h400-cpad-bffffff/<sku>.jpeg`
+`https://api.cappasity.com/api/files/preview/cappasity/<sku>.jpeg`
+
+To get a preview - form a link that consists of modifiers and model SKU or uuid v4
+Supported modifiers:
+
+```
+  - height:       eg. h500
+  - width:        eg. w200
+  - square:       eg. s50
+  - crop:         eg. cfill
+  - top:          eg. y12
+  - left:         eg. x200
+  - gravity:      eg. gs, gne
+  - quality:      eg. q90
+  - background:   eg. b252525
+```
+  
