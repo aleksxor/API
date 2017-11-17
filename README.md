@@ -78,9 +78,12 @@ Below is description of accepted params:
 | Query         | offset          |        0 |     0 < offset   | `?offset=24`                    | Used for paginating |
 | Query         | limit           |       12 | 0 < limit <= 100 | `?limit=24`                     | Models per page |
 | Query         | filter          | `%7B%7D` |                  | `?filter=%7B%7D` | Used to filter response |
-| Query         | criteria        |       id |                  | `?criteria=uploadedAt`          | sorts by this field |
-| Query         | shallow         |        0 |                  | `?shallow=1`                    | please set to 1 to reduce traffic. It omits information about uploaded files |
-| Query         | owner           |          |                  | `?owner=tsum`                   | for public - can select any customer alias, for private - must supply auth token |
+| Query         | criteria        |       id |                  | `?criteria=uploadedAt`          | Sorts by this field |
+| Query         | shallow         |        0 |                  | `?shallow=1`                    | Please set to 1 to reduce traffic. It omits information about uploaded files |
+| Query         | owner           |          |                  | `?owner=cappasity`              | For public - can select any customer alias, for private - must supply auth token |
+| Query         | embed           |        0 |             0, 1 | `?embed=1`                      | Will render embed.code into embed.html param |
+| Query         | embedParams     |   %7B%7D |                  | `?embedParams=%7B%7D`           | Specify override values for embed.code template | 
+
 
 Most important of all params is filter. To create it use the following function:
 
