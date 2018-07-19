@@ -119,7 +119,7 @@ curl -X GET --compressed \
 `https://api.cappasity.com/api/files/preview/tsum/w640-h400-cpad-bffffff/<sku>.jpeg`
 `https://api.cappasity.com/api/files/preview/tsum/<sku>.jpeg`
 
-To get a preview - form a link that consists of modifiers and model `SKU` or `cappasity-id` (refer to [File.json#/properties/id](#file-3-file-json-L15-L19))
+To get a preview - form a link that consists of modifiers and model `SKU` or `cappasity-id` (refer to [File.json#/properties/id](file.json))
 Supported modifiers:
 
 ```
