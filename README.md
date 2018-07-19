@@ -114,10 +114,12 @@ curl -X GET --compressed \
 
 ### Getting preview image for the model
 
-`https://api.cappasity.com/api/files/preview/cappasity/w640-h400-cpad-bffffff/<sku>.jpeg`
-`https://api.cappasity.com/api/files/preview/cappasity/<sku>.jpeg`
+`https://api.cappasity.com/api/files/preview/tsum/w640-h400-cpad-bffffff/<cappasity-id>.jpeg`
+`https://api.cappasity.com/api/files/preview/tsum/<cappasity-id>.jpeg`
+`https://api.cappasity.com/api/files/preview/tsum/w640-h400-cpad-bffffff/<sku>.jpeg`
+`https://api.cappasity.com/api/files/preview/tsum/<sku>.jpeg`
 
-To get a preview - form a link that consists of modifiers and model SKU or uuid v4
+To get a preview - form a link that consists of modifiers and model `SKU` or `cappasity-id` (refer to [File.json#/properties/id](#file-3-file-json-L15-L19))
 Supported modifiers:
 
 ```
@@ -132,3 +134,7 @@ Supported modifiers:
   - background:   eg. b252525
 ```
   
+Example links:
+  
+* 640x400, preserving aspect ratio and padding with white background (default): https://api.cappasity.com/api/files/preview/tsum/w640-h400-cpad/5100008597412.jpeg
+* original file that was uploaded: https://api.cappasity.com/api/files/preview/tsum/5100008597412.jpeg
