@@ -36,8 +36,8 @@ curl -X POST --compressed \
       "id": "sku2137189",
       "type": "embed",
       "attributes": {
-        "width": "100%",
-        "height": "600px",
+        "width": 100,
+        "height": 600,
         "autorun": true,
         "closebutton": true,
         "hidecontrols": false,
