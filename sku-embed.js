@@ -29,18 +29,18 @@ function generateEmbedCode(SKUorBarcode) {
         type: 'embed',
         // all of these options have defaults and are not required
         attributes: {
-          width: 100%, // width of iframe
-          height: 600, // height of iframe
+          width: 100, // width of iframe, when 100 it will be translated to 100%, cant be less than 100
+          height: 600, // height of iframe, will be translated to 600px, cant be less than 100
           autorun: true, // whether to start the player (widget) automatically or display the preview and play button
-	  autorotate: false, // Start automatic rotation
+          autorotate: false, // Start automatic rotation
           closebutton: true, // widget close button
           logo: true, // whether to display cappasity platform logo or not
           hidefullscreen: false, // whether to hide fullscreen button or not
-	  enableimagezoom: true, // enable zoom mode (if zoom packs exists) 
-          zoomquality: 1, // 1 – SD, 2 – HD
-	  autorotatetime: 12, // rotation time of the full turn: 2.5 – 60 seconds
-	  autorotatedelay:  , // delay if rotation was interrupted: 1 – 10 seconds
-	  autorotatedir: 1, // rotation direction: 1 – clockwise, -1 – counter-clockwise     
+          enableimagezoom: true, // enable zoom mode (if zoom packs exists) 
+          zoomquality: 1, // 1 â€“ SD, 2 â€“ HD
+          autorotatetime: 12, // rotation time of the full turn: 2.5 â€“ 60 seconds
+          autorotatedelay:  , // delay if rotation was interrupted: 1 â€“ 10 seconds
+          autorotatedir: 1, // rotation direction: 1 â€“ clockwise, -1 â€“ counter-clockwise     
         },
       },
     },
