@@ -138,3 +138,59 @@ Example links:
   
 * 640x400, preserving aspect ratio and padding with white background (default): https://api.cappasity.com/api/files/preview/tsum/w640-h400-cpad/5100008597412.jpeg
 * original file that was uploaded: https://api.cappasity.com/api/files/preview/tsum/5100008597412.jpeg
+
+## Interacting with the Player
+
+Player iframe emits events using [window.parent.postMessage](https://developer.mozilla.org/en-US/docs/Web/API/Window/postMessage) for certain actions that happen within the player. You may attach a top window listener, which would allow you to receive these events.
+
+To do that you need to execute the following code in your top-level window, which contains iframe with the player:
+
+```js
+window.addEventListener('message', receiveMessage, false);
+
+// event: https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent
+function receiveMessage(event) {
+  // verify that origin of event is cappasity iframe
+  if (event.origin !== 'https://api.cappasity.com') return // ignore events which originate outside of iframe
+  if (!event.data || !event.data.actionType) return
+  
+  // use event.source to determine which iframe sent the loaded message if you have multiple
+  // iframes with the same model embedded on a single page
+  
+  switch (event.data.actionType) {
+    case 'loaded':
+      // model fully loaded
+      // use event.data.modelId to determine which model had loaded
+      break;
+    case 'draw':
+      // embed performed a frame draw
+      // use event.data.modelId to determine which one
+      break;
+  }
+}
+```
+
+### Types of events
+
+#### Frame Draw Notification
+
+Frame render notification, will be dispatched each time a draw happens, including when a player is being rotated
+
+```js
+{
+  modelId: 'uuid-v4',
+  actionType: 'draw'
+}
+```
+
+#### Full Model Load
+
+This happens when all segments of the 3d view had been downloaded. This is not a first paint - its a full
+load. To be able to track initial render and interactivity of the player - listen to frame draw notification
+
+```js
+{
+  actionType: 'loaded',
+  modelId: 'uuid-v4-of-the-model'
+}
+```
