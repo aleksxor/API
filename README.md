@@ -178,7 +178,7 @@ Frame render notification, will be dispatched each time a draw happens, includin
 
 ```js
 {
-  modelId: 'uuid-v4',
+  modelId: 'uuid-v4-of-the-model',
   actionType: 'draw'
 }
 ```
@@ -190,7 +190,33 @@ load. To be able to track initial render and interactivity of the player - liste
 
 ```js
 {
-  actionType: 'loaded',
-  modelId: 'uuid-v4-of-the-model'
+  modelId: 'uuid-v4-of-the-model',
+  actionType: 'loaded'
 }
+```
+
+## Controlling Player behavior
+
+You can control some aspects of the player behavior sending `postMessage` messages to the `window` object corresponding to the player's iframe.
+
+Given the fact the player iframe is tagged with `id="player"` one can send a message to the player executing this code:
+
+```js
+  var player = document.getElementById('player')
+  
+  if (player && player.contentWindow) {
+    player.contentWindow.postMessage({ fn: <methodName>, args: [...] }, 'https://api.cappasity.com')
+  }
+```
+
+### Available methods
+
+#### `rotateToDeg`
+
+Rotate the model to the certain degree. Accepts a single argument: degree to rotate to. A number in [0..360] range.
+
+The method is available right away but actual rotation will not happen until the first `draw` event. Usage example (rotate the model to the 90th degree):
+
+```js
+  document.getElementById('player').contentWindow.postMessage({ fn: 'rotateToDeg', args: [90] }, 'https://api.cappasity.com')
 ```
