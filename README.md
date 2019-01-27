@@ -1,5 +1,7 @@
 # Documentation for integrating with Cappasity 3D Platform
 
+(c) Copyright 2017-2019, Cappasity Inc. All rights reserved.
+
 ## Registering an account and getting an API key
 
 1. Register using https://3d.cappasity.com/register link
