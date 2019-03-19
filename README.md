@@ -222,3 +222,11 @@ The method is available right away but actual rotation will not happen until the
 ```js
   document.getElementById('player').contentWindow.postMessage({ fn: 'rotateToDeg', args: [90] }, 'https://api.cappasity.com')
 ```
+
+#### `cancelFullscreen`
+
+If player is in full-screen mode it immediately leaves it. Otherwise does nothing.
+
+```js
+  document.getElementById('player').contentWindow.postMessage({ fn: 'cancelFullscreen', args: [] }, 'https://api.cappasity.com')
+```
