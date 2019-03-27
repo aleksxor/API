@@ -230,3 +230,11 @@ If player is in full-screen mode it immediately leaves it. Otherwise does nothin
 ```js
   document.getElementById('player').contentWindow.postMessage({ fn: 'cancelFullscreen', args: [] }, 'https://api.cappasity.com')
 ```
+
+#### `cancelZoom`
+
+If model in the player is zoomed this command will return it back to non-zoomed state. Otherwise does nothing.
+
+```js
+  document.getElementById('player').contentWindow.postMessage({ fn: 'cancelZoom', args: [] }, 'https://api.cappasity.com')
+```
